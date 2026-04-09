@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 100" width="128" height="100">
+  <!-- Eye body (rounded shape) -->
+  <ellipse cx="64" cy="38" rx="40" ry="28" fill="black" />
+
+  <!-- Eye white -->
+  <ellipse cx="64" cy="38" rx="28" ry="18" fill="white" />
+
+  <!-- Iris -->
+  <circle cx="64" cy="38" r="12" fill="black" />
+
+  <!-- Pupil hole -->
+  <circle cx="64" cy="38" r="6" fill="white" />
+
+  <!-- Tentacles (4, thick, short) -->
+  <path d="M 38 58 Q 30 74 24 88 Q 22 94 28 90 Q 36 80 40 68" fill="black" stroke="black" stroke-width="2" stroke-linejoin="round" />
+  <path d="M 52 62 Q 48 78 44 92 Q 42 98 48 94 Q 54 84 54 72" fill="black" stroke="black" stroke-width="2" stroke-linejoin="round" />
+  <path d="M 76 62 Q 80 78 84 92 Q 86 98 80 94 Q 74 84 74 72" fill="black" stroke="black" stroke-width="2" stroke-linejoin="round" />
+  <path d="M 90 58 Q 98 74 104 88 Q 106 94 100 90 Q 92 80 88 68" fill="black" stroke="black" stroke-width="2" stroke-linejoin="round" />
+</svg>
