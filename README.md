@@ -42,17 +42,6 @@ This builds a release binary, creates an app bundle at `~/Applications/Octoblikk
 
 To rebuild after making changes, run `./install.sh` again.
 
-## Development
-
-Build and run from source:
-
-```bash
-swift build
-swift run octoblikk
-```
-
-Or open `Package.swift` in Xcode for the full IDE experience.
-
 ## PR status colors
 
 | Status | Color |
@@ -91,6 +80,21 @@ Settings and seen state are stored in `~/Library/Application Support/octoblikk/`
 - Swift Package Manager
 - GitHub REST API via Foundation `URLSession`
 - No external dependencies
+
+## The name
+
+I didn't want to spend much time on it. It's a combination of "Octo" from "Octocat" (eg GitHub) and the norwegian word "Blikk", meaning "Glance".
+
+## Development
+
+Build and run from source:
+
+```bash
+swift build
+swift run octoblikk
+```
+
+Or open `Package.swift` in Xcode for the full IDE experience.
 
 ## License
 
