@@ -11,10 +11,10 @@ struct ContentView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    // Open PRs
-                    if !viewModel.openPRs.isEmpty {
+                    // Approved PRs
+                    if !viewModel.approvedPRs.isEmpty {
                         HStack {
-                            SectionHeader(title: "Open Pull Requests", count: viewModel.openCount)
+                            SectionHeader(title: "Ready to Merge", count: viewModel.approvedPRs.count)
                             Spacer()
                             if viewModel.hasUnread {
                                 Button("Mark all read") {
@@ -26,7 +26,33 @@ struct ContentView: View {
                                 .padding(.trailing, 12)
                             }
                         }
-                        ForEach(viewModel.openPRs) { pr in
+                        ForEach(viewModel.approvedPRs) { pr in
+                            PRRow(
+                                pr: pr,
+                                isUnread: viewModel.isUnread(pr),
+                                onOpen: { viewModel.openInBrowser(pr) },
+                                onMarkRead: { viewModel.markAsRead(pr) }
+                            )
+                            Divider()
+                        }
+                    }
+
+                    // Open PRs (non-approved)
+                    if !viewModel.nonApprovedOpenPRs.isEmpty {
+                        HStack {
+                            SectionHeader(title: "Open Pull Requests", count: viewModel.nonApprovedOpenPRs.count)
+                            Spacer()
+                            if viewModel.approvedPRs.isEmpty && viewModel.hasUnread {
+                                Button("Mark all read") {
+                                    viewModel.markAllAsRead()
+                                }
+                                .font(.caption)
+                                .buttonStyle(.plain)
+                                .foregroundStyle(.secondary)
+                                .padding(.trailing, 12)
+                            }
+                        }
+                        ForEach(viewModel.nonApprovedOpenPRs) { pr in
                             PRRow(
                                 pr: pr,
                                 isUnread: viewModel.isUnread(pr),

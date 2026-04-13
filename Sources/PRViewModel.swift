@@ -41,6 +41,9 @@ final class PRViewModel {
 
     var openCount: Int { openPRs.count }
 
+    var approvedPRs: [PullRequest] { openPRs.filter { $0.status == .approved } }
+    var nonApprovedOpenPRs: [PullRequest] { openPRs.filter { $0.status != .approved } }
+
     var hasUnread: Bool {
         (openPRs + closedPRs).contains { isUnread($0) }
     }
