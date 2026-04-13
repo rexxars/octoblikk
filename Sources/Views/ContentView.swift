@@ -134,9 +134,6 @@ struct ContentView: View {
         }
         .frame(width: 400)
         .frame(minHeight: 200, maxHeight: 600)
-        .task {
-            await viewModel.start()
-        }
     }
 }
 

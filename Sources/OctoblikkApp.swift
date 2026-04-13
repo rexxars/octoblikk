@@ -4,6 +4,11 @@ import SwiftUI
 struct OctoblikkApp: App {
     @State private var viewModel = PRViewModel()
 
+    init() {
+        let vm = viewModel
+        Task { await vm.start() }
+    }
+
     var body: some Scene {
         MenuBarExtra {
             ContentView()
