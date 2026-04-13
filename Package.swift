@@ -9,6 +9,7 @@ let package = Package(
             name: "octoblikk",
             path: "Sources",
             exclude: ["Resources"],
+            resources: [.process("Assets")],
             linkerSettings: [
                 .unsafeFlags([
                     "-Xlinker", "-sectcreate",

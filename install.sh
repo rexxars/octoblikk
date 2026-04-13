@@ -16,6 +16,8 @@ mkdir -p "$MACOS_DIR" "$RESOURCES_DIR"
 cp .build/release/octoblikk "$MACOS_DIR/"
 cp Sources/Resources/Info.plist "$CONTENTS_DIR/"
 cp Sources/Resources/AppIcon.icns "$RESOURCES_DIR/"
+cp -R .build/apple/Products/Release/octoblikk_octoblikk.bundle "$RESOURCES_DIR/" 2>/dev/null \
+  || cp -R .build/arm64-apple-macosx/release/octoblikk_octoblikk.bundle "$RESOURCES_DIR/"
 
 # Kill running instance if any, so the new one takes over
 pkill -x octoblikk 2>/dev/null && echo "Stopped running instance." || true
