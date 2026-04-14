@@ -15,8 +15,9 @@ struct OctoblikkApp: App {
             ContentView()
                 .environment(viewModel)
         } label: {
+            let tint = viewModel.unreadMenuBarColor
             HStack(spacing: 2) {
-                if let nsImage = loadMenuBarIcon() {
+                if let nsImage = loadMenuBarIcon(template: tint == nil) {
                     Image(nsImage: nsImage)
                 } else {
                     Image(systemName: "arrow.triangle.pull")
@@ -24,22 +25,18 @@ struct OctoblikkApp: App {
                 if viewModel.openCount > 0 {
                     Text("\(viewModel.openCount)")
                 }
-                if viewModel.hasUnread {
-                    Image(systemName: "circle.fill")
-                        .font(.system(size: 5))
-                        .foregroundStyle(Color.accentColor)
-                }
             }
+            .foregroundStyle(tint ?? .primary)
         }
         .menuBarExtraStyle(.window)
     }
 
-    private func loadMenuBarIcon() -> NSImage? {
+    private func loadMenuBarIcon(template: Bool) -> NSImage? {
         guard let url = Bundle.module.url(forResource: "MenuBarIcon", withExtension: "png"),
               let image = NSImage(contentsOf: url) else {
             return nil
         }
-        image.isTemplate = true
+        image.isTemplate = template
         image.size = NSSize(width: 18, height: 18)
         return image
     }

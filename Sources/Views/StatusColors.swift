@@ -14,6 +14,30 @@ extension PRStatus {
         }
     }
 
+    /// Priority for determining menu bar tint color (higher = more urgent)
+    var unreadPriority: Int {
+        switch self {
+        case .checksFailed: 5
+        case .changesRequested: 4
+        case .approved: 3
+        case .merged: 2
+        case .notMergeable: 1
+        case .closed, .waitingForReview, .draft: 0
+        }
+    }
+
+    /// Color used in the menu bar when this status has unread activity
+    var menuBarColor: Color? {
+        switch self {
+        case .checksFailed: .red
+        case .changesRequested: .orange
+        case .approved: .green
+        case .merged: .purple
+        case .notMergeable: .gray
+        case .closed, .waitingForReview, .draft: nil
+        }
+    }
+
     var label: String {
         switch self {
         case .approved: "Approved"

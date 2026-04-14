@@ -1,6 +1,6 @@
 import Foundation
 import Observation
-import AppKit
+import SwiftUI
 
 private let botSuffixes = ["[bot]"]
 private let botLogins: Set<String> = [
@@ -46,6 +46,14 @@ final class PRViewModel {
 
     var hasUnread: Bool {
         (openPRs + closedPRs).contains { isUnread($0) }
+    }
+
+    /// The most urgent unread PR status color for the menu bar, or nil if nothing noteworthy
+    var unreadMenuBarColor: Color? {
+        (openPRs + closedPRs)
+            .filter { isUnread($0) }
+            .max { $0.status.unreadPriority < $1.status.unreadPriority }?
+            .status.menuBarColor
     }
 
     init() {
