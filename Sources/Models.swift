@@ -159,6 +159,23 @@ struct PRSeenInfo: Codable, Sendable {
 
 struct AppSettings: Codable, Sendable {
     var pollIntervalMinutes: Int
+    var excludedOrganizations: String
 
-    static let `default` = AppSettings(pollIntervalMinutes: 5)
+    static let `default` = AppSettings(pollIntervalMinutes: 5, excludedOrganizations: "")
+
+    init(pollIntervalMinutes: Int, excludedOrganizations: String) {
+        self.pollIntervalMinutes = pollIntervalMinutes
+        self.excludedOrganizations = excludedOrganizations
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case pollIntervalMinutes
+        case excludedOrganizations
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.pollIntervalMinutes = try container.decode(Int.self, forKey: .pollIntervalMinutes)
+        self.excludedOrganizations = try container.decodeIfPresent(String.self, forKey: .excludedOrganizations) ?? ""
+    }
 }

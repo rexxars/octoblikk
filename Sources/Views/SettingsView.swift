@@ -28,6 +28,15 @@ struct SettingsView: View {
                 }
             }
 
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Excluded orgs:")
+                TextField("org1, org2", text: $vm.settings.excludedOrganizations)
+                    .textFieldStyle(.roundedBorder)
+                    .onSubmit {
+                        Task { await viewModel.refresh() }
+                    }
+            }
+
             Toggle("Launch at login", isOn: $launchAtLogin)
                 .onChange(of: launchAtLogin) { _, enabled in
                     do {

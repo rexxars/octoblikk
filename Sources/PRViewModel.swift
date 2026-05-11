@@ -41,6 +41,22 @@ final class PRViewModel {
 
     var openCount: Int { openPRs.count }
 
+    private var excludedOrgs: Set<String> {
+        Set(settings.excludedOrganizations
+            .split(separator: ",", omittingEmptySubsequences: false)
+            .map { $0.trimmingCharacters(in: .whitespaces).lowercased() }
+            .filter { !$0.isEmpty })
+    }
+
+    private func isExcluded(htmlUrl: String) -> Bool {
+        let excluded = excludedOrgs
+        guard !excluded.isEmpty else { return false }
+        let parts = htmlUrl.split(separator: "/")
+        guard parts.count >= 5 else { return false }
+        let owner = String(parts[parts.count - 4]).lowercased()
+        return excluded.contains(owner)
+    }
+
     var approvedPRs: [PullRequest] { openPRs.filter { $0.status == .approved } }
     var nonApprovedOpenPRs: [PullRequest] { openPRs.filter { $0.status != .approved } }
 
@@ -111,8 +127,11 @@ final class PRViewModel {
             hasMoreOpen = openResult.items.count == 30
             hasMoreClosed = closedResult.items.count == 30
 
-            let allOpen = await buildPRs(from: openResult.items, isClosed: false)
-            let allClosed = await buildPRs(from: closedResult.items, isClosed: true)
+            let openItems = openResult.items.filter { !isExcluded(htmlUrl: $0.htmlUrl) }
+            let closedItems = closedResult.items.filter { !isExcluded(htmlUrl: $0.htmlUrl) }
+
+            let allOpen = await buildPRs(from: openItems, isClosed: false)
+            let allClosed = await buildPRs(from: closedItems, isClosed: true)
 
             self.draftPRs = allOpen.filter(\.isDraft).sorted { $0.updatedAt > $1.updatedAt }
             self.openPRs = allOpen.filter { !$0.isDraft }.sorted { $0.updatedAt > $1.updatedAt }
@@ -135,7 +154,8 @@ final class PRViewModel {
         do {
             let response = try await service.fetchOpenPRs(page: openPage)
             hasMoreOpen = response.items.count == 30
-            let more = await buildPRs(from: response.items, isClosed: false)
+            let items = response.items.filter { !isExcluded(htmlUrl: $0.htmlUrl) }
+            let more = await buildPRs(from: items, isClosed: false)
             draftPRs += more.filter(\.isDraft).sorted { $0.updatedAt > $1.updatedAt }
             openPRs += more.filter { !$0.isDraft }.sorted { $0.updatedAt > $1.updatedAt }
         } catch {
@@ -149,7 +169,8 @@ final class PRViewModel {
         do {
             let response = try await service.fetchClosedPRs(page: closedPage)
             hasMoreClosed = response.items.count == 30
-            let more = await buildPRs(from: response.items, isClosed: true)
+            let items = response.items.filter { !isExcluded(htmlUrl: $0.htmlUrl) }
+            let more = await buildPRs(from: items, isClosed: true)
             closedPRs += more.filter { !isArchived($0) }.sorted { $0.updatedAt > $1.updatedAt }
         } catch {
             self.errorMessage = error.localizedDescription
