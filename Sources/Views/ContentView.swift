@@ -3,6 +3,47 @@ import SwiftUI
 struct ContentView: View {
     @Environment(PRViewModel.self) var viewModel
 
+    /// Approximate heights used to size the popover so it opens showing a useful
+    /// number of rows instead of collapsing to the minimum height.
+    private static let rowHeight: CGFloat = 53
+    private static let draftRowHeight: CGFloat = 27
+    private static let sectionHeaderHeight: CGFloat = 33
+    private static let footerHeight: CGFloat = 34
+    private static let maxVisibleRows = 6
+
+    private var popoverHeight: CGFloat {
+        var sections = 0
+        var rows = 0
+        var draftRows = 0
+
+        if !viewModel.approvedPRs.isEmpty {
+            sections += 1
+            rows += viewModel.approvedPRs.count
+        }
+        if !viewModel.nonApprovedOpenPRs.isEmpty {
+            sections += 1
+            rows += viewModel.nonApprovedOpenPRs.count
+        }
+        if !viewModel.closedPRs.isEmpty {
+            sections += 1
+            rows += viewModel.closedPRs.count
+        }
+        if !viewModel.draftPRs.isEmpty {
+            sections += 1
+            draftRows = viewModel.draftPRs.count
+        }
+
+        let visibleRows = min(rows, Self.maxVisibleRows)
+        let visibleDraftRows = min(draftRows, max(0, Self.maxVisibleRows - visibleRows))
+
+        let height = CGFloat(sections) * Self.sectionHeaderHeight
+            + CGFloat(visibleRows) * Self.rowHeight
+            + CGFloat(visibleDraftRows) * Self.draftRowHeight
+            + Self.footerHeight
+
+        return min(max(height, 200), 600)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             if let error = viewModel.errorMessage {
@@ -132,8 +173,7 @@ struct ContentView: View {
             // Footer
             FooterView()
         }
-        .frame(width: 400)
-        .frame(minHeight: 200, maxHeight: 600)
+        .frame(width: 400, height: popoverHeight)
     }
 }
 
